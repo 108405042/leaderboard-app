@@ -12,10 +12,17 @@ try:
     data = response.json()
 
     df = pd.DataFrame(data)
-    df = df[["Rank", "weeklyScore"]]  # 選擇欄位
+    df = df[["Rank", "weeklyScore"]]
+
+    # 確保欄位為數值型別
+    df["Rank"] = pd.to_numeric(df["Rank"], errors="coerce")
+    df["weeklyScore"] = pd.to_numeric(df["weeklyScore"], errors="coerce")
+
+    df = df.dropna(subset=["Rank", "weeklyScore"])
     df = df.sort_values(by="Rank").reset_index(drop=True)
+
     for _, row in df.iterrows():
-        rank = row['Rank']
+        rank = int(row['Rank'])
         score = row['weeklyScore']
         if rank == 1:
             emoji = "🥇"
@@ -36,6 +43,7 @@ try:
             <span style='float: right; font-size: 18px; color: {color}; font-weight: bold;'>{score} 分</span>
         </div>
         """, unsafe_allow_html=True)
+
         if rank == 25:
             st.markdown("""
             <div style='font-size: 16px; color: #444; margin-top: 20px; margin-bottom: 10px; text-align: center;'>----- 🎁 前25名可獲得額外獎勵 -----</div>
