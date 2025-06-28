@@ -23,7 +23,7 @@ try:
 
     for _, row in df.iterrows():
         rank = int(row['Rank'])
-        score = row['weeklyScore']
+        score = int(round(row['weeklyScore']))
         if rank == 1:
             emoji = "🥇"
             color = "gold"
